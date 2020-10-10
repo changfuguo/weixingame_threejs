@@ -5,23 +5,31 @@ class GameView {
   constructor() {
 
   }
+  showGamePage() {
+    this.gameOverPage.hide()
+    this.gamePage.restart()
+    this.gamePage.show()
+  }
 
   showGameOverPage() {
+    this.gamePage.hide()
     this.gameOverPage.show()
   }
 
   restartGame() {
-    this.gamePages.restart()
+    this.gamePage.restart()
   }
 
   initGameOverPage(callbacks) {
     this.gameOverPage = new GameOverPage(callbacks)
-    this.gameOverPage.init()
+    this.gameOverPage.init({
+      scene: this.gamePage.scene
+    })
   }
 
   initGamePage (callbacks) {
-    this.gamePages = new GamePage(callbacks)
-    this.gamePages.init()
+    this.gamePage = new GamePage(callbacks)
+    this.gamePage.init()
   }
 
 }
