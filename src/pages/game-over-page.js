@@ -7,9 +7,9 @@ class GameOverPage {
   }
 
   initGameoverCanvas(options) {
-    console.log(123)
+    console.log(options, 'options')
     const aspect = window.innerHeight / window.innerWidth
-    this.scene = options.scene
+    this.scene = options.scene.instance
     this.canvas = document.createElement('canvas')
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
@@ -18,8 +18,9 @@ class GameOverPage {
     this.material = new THREE.MeshBasicMaterial({
       map: this.texture,
       transparent: true,
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide // 绘制两面
     })
+    // 创建矩形平面
     this.geometry = new THREE.PlaneGeometry(window.innerWidth, window.innerHeight)
     this.obj = new THREE.Mesh(this.geometry, this.material)
     this.obj.position.z = 1

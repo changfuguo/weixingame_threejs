@@ -5,6 +5,7 @@ class GameController {
   constructor() {
     this.gameView = gameView
     this.gameModel = gameModel
+    // push event 事件
     this.gameModel.stageChanged.attach((sender, args) => {
       const stageName = args.stage
       switch(stageName) {
@@ -28,7 +29,7 @@ class GameController {
     const gameOverPageCallbacks = () => {
       this.gameModel.setStage('game')
     }
-
+    // 传入回调函数-在 game page 中调用
     this.gameView.initGamePage(gamePageCallbacks)
     this.gameView.initGameOverPage(gameOverPageCallbacks)
   }
