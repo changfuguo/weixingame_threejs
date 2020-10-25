@@ -23,6 +23,10 @@ class GamePage {
   
   render() {
     this.scene.render()
+
+    if (this.bottle) {
+      this.bottle.update()
+    }
     requestAnimationFrame(this.render.bind(this))
   }
 
@@ -35,6 +39,8 @@ class GamePage {
 
   addGround() {
     this.scene.instance.add(this.ground.instance)
+    // 调用物体动画
+    this.bottle.showup()
   }
 
   addBottle() {
