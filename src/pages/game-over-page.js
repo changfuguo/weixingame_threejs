@@ -7,7 +7,6 @@ class GameOverPage {
   }
 
   initGameoverCanvas(options) {
-    console.log(options, 'options')
     const aspect = window.innerHeight / window.innerWidth
     this.scene = options.scene.instance
     this.canvas = document.createElement('canvas')
