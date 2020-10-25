@@ -18,12 +18,33 @@ class GamePage {
     this.addInitBlock()
     this.addGround()
     this.addBottle()
+    this.bindTouchEvent()
     this.render()
   }
   
+  bindTouchEvent() {
+    this.touchStartCallback = this.touchStartCallback.bind(this)
+    this.touchEndCallback = this.touchEndCallback.bind(this)
+    canvas.addEventListener('touchstart', this.touchStartCallback)
+    canvas.addEventListener('touchend', this.touchEndCallback)
+  }
+
+  removeTouchEvent() {
+    canvas.removeEventListener('touchstart', this.touchStartCallback)
+    canvas.removeEventListener('touchend', this.touchEndCallback)
+  }
+
+  touchStartCallback() {
+    this.bottle.shrink()
+  }
+
+  touchEndCallback() { 
+    this.bottle.stop()
+    this.bottle.rotate()
+  }
+
   render() {
     this.scene.render()
-
     if (this.bottle) {
       this.bottle.update()
     }
