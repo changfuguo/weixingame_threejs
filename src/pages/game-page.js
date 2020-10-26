@@ -9,6 +9,7 @@ import bottleConf from '../../confs/bottle-conf'
 // import { stopAllAnimation } from '../../libs/animation'
 // import audioManager from '../modules/audio-manager'
 import utils from '../utils/index'
+import ScoreText from '../view3d/score-text'
 
 const HIT_NEXT_BLOCK_CENTER = 1
 const HIT_CURRENT_BLOCK = 2
@@ -23,17 +24,24 @@ class GamePage {
     this.callbacks = callbacks
     this.targetPosition = {}
     this.checkingHit = false
+    this.score = 0
   }
   init() {
     this.scene = scene
     this.ground = ground
     this.bottle = bottle
+    this.scoreText = new ScoreText()
     this.scene.init()
     this.ground.init()
     this.bottle.init()
     this.addInitBlock()
+    // 初始计分器
+    this.scoreText.init({
+      fillStyle: 0x666699
+    })
     this.addGround()
     this.addBottle()
+    this.addScore()
     this.bindTouchEvent()
     this.render()
   }
@@ -101,6 +109,15 @@ class GamePage {
       this.checkBottleHit()
     }
     requestAnimationFrame(this.render.bind(this))
+  }
+
+  addScore () {
+    this.scene.addScore(this.scoreText.instance)
+  }
+
+  updateScore (score) {
+    this.scoreText.updateScore(score)
+    this.scene.updateScore(this.scoreText.instance)
   }
 
   addInitBlock() {
@@ -231,6 +248,7 @@ class GamePage {
         this.bottle.obj.position.z = this.bottle.destination[1]
         // 渲染下一个 block
         if (this.hit === HIT_NEXT_BLOCK_CENTER || this.hit === HIT_NEXT_BLOCK_NORMAL) {
+          this.updateScore(++this.score)
           // 直接生成 block，并改变相机的位置
           this.updateNextBlock()
         }
@@ -266,6 +284,8 @@ class GamePage {
     this.scene.reset()
     this.bottle.reset()
     this.ground.reset()
+    // 清空分数
+    this.updateScore('0')
     this.addInitBlock()
     this.addGround()
     this.addBottle()

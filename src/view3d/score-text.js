@@ -11,6 +11,7 @@ export default class ScoreText {
       this.material.opacity = options.opacity
     }
     this.options = options || {}
+    // 文字类型
     const geometry = new THREE.TextGeometry('0', {'font': font, 'size': 6.0, 'height': 0.1})
     this.instance = new THREE.Mesh(geometry, this.material)
     this.instance.name = 'scoreText'
