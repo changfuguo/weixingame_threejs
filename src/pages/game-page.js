@@ -7,9 +7,9 @@ import blockConf from '../../confs/block-conf'
 import gameConf from '../../confs/game-conf'
 import bottleConf from '../../confs/bottle-conf'
 // import { stopAllAnimation } from '../../libs/animation'
-// import audioManager from '../modules/audio-manager'
 import utils from '../utils/index'
 import ScoreText from '../view3d/score-text'
+import audioManager from '../modules/audio-manager'
 
 const HIT_NEXT_BLOCK_CENTER = 1
 const HIT_CURRENT_BLOCK = 2
@@ -25,6 +25,7 @@ class GamePage {
     this.targetPosition = {}
     this.checkingHit = false
     this.score = 0
+    this.combo = 0
   }
   init() {
     this.scene = scene
@@ -62,6 +63,8 @@ class GamePage {
     this.touchStartTime = Date.now()
     this.bottle.shrink()
     this.currentBlock.shrink()
+    // 打开音乐
+    audioManager.shrink.play()
   }
 
   touchEndCallback() { 
@@ -81,6 +84,9 @@ class GamePage {
     // 设置瓶子的初速度
     this.bottle.rotate()
     this.bottle.jump()
+    // 结束跳跃的音频以及结束的音频
+    audioManager.shrink.stop()
+    audioManager.shrink_end.stop()
   }
 
   setDirection(direction) {
@@ -248,7 +254,16 @@ class GamePage {
         this.bottle.obj.position.z = this.bottle.destination[1]
         // 渲染下一个 block
         if (this.hit === HIT_NEXT_BLOCK_CENTER || this.hit === HIT_NEXT_BLOCK_NORMAL) {
-          this.updateScore(++this.score)
+          if(this.hit === HIT_NEXT_BLOCK_CENTER) {
+            this.combo ++
+            audioManager[`combo${(this.combo <= 8) ? this.combo : '8'}`].play()
+            this.score +=2 * this.combo
+            this.updateScore(this.score)
+          } else if (this.hit === HIT_NEXT_BLOCK_NORMAL) {
+            this.combo = 0
+            audioManager.success.play()
+            this.updateScore(++this.score)
+          }
           // 直接生成 block，并改变相机的位置
           this.updateNextBlock()
         }
