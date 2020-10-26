@@ -191,14 +191,16 @@ class Bottle {
 
   _jump(tickTime) {
     const t = tickTime / 1000
-    // 整个运动的时间
-    this.flyingTime = this.flyingTime + t
     // 水平方向的距离
     const translateH = this.velocity.vx * t
     const translateY = this.velocity.vy * t - 0.5 * gameConf.gravity * t * t - gameConf.gravity * this.flyingTime * t
 
+    this.translateH += translateH
+    this.translateY += translateY
     this.obj.translateY(translateY)
     this.obj.translateOnAxis(this.axis, translateH)
+    // 整个运动的时间
+    this.flyingTime = this.flyingTime + t
   }
 
   update() {

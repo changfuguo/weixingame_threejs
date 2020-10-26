@@ -147,7 +147,7 @@ class GamePage {
     let result1, result2
     if (nextBlock) {
       // 计算下一个 block 与当前位置的欧氏距离
-      const nextDiff = Math.pow(destination[0] - nextBlock.instance.position.x, 2) + Math.pow(destination[1] - nextBlock.instance.position.y, 2)
+      const nextDiff = Math.pow(destination[0] - nextBlock.instance.position.x, 2) + Math.pow(destination[1] - nextBlock.instance.position.z, 2)
       // 获取每个 block 在坐标系中的顶点
       const nextPolygon = nextBlock.getVertices()
       
@@ -182,6 +182,44 @@ class GamePage {
     return result1 || result2 || 0
   }
 
+  updateNextBlock() {
+    const seed = Math.round(Math.random())
+    const type = seed ? 'cuboid' : 'cylinder'
+    const direction = Math.round(Math.random()) // 0 --> x 轴，1 --> y 轴
+    const width = Math.round(Math.random() * 12) + 8
+    // 距离
+    const distance = Math.round(Math.random() * 20) + 20
+    this.currentBlock = this.nextBlock
+    const targetPosition = this.targetPosition = {}
+    // 沿着 x 轴跳
+    if (direction === 0) {
+      targetPosition.x = this.currentBlock.instance.position.x + distance
+      targetPosition.y = this.currentBlock.instance.position.y
+      targetPosition.z = this.currentBlock.instance.position.z
+    } else if (direction === 1) {
+      // 沿着 z 轴跳
+      targetPosition.x = this.currentBlock.instance.position.x
+      targetPosition.y = this.currentBlock.instance.position.y
+      targetPosition.z = this.currentBlock.instance.position.z - distance
+    }
+    this.setDirection(direction)
+    if (type === 'cuboid') {
+      this.nextBlock = new Cuboid(targetPosition.x, targetPosition.y, targetPosition.z, width)
+    } else {
+      this.nextBlock = new Cylinder(targetPosition.x, targetPosition.y, targetPosition.z, width)
+    }
+    this.scene.instance.add(this.nextBlock.instance)
+    // 修改相机的位置
+    const cameraTargetPosition = {
+      x: (this.currentBlock.instance.position.x + this.nextBlock.instance.position.x) / 2,
+      y: (this.currentBlock.instance.position.y + this.nextBlock.instance.position.y) / 2,
+      z: (this.currentBlock.instance.position.z + this.nextBlock.instance.position.z) / 2
+    }
+    this.scene.updateCameraPosition(cameraTargetPosition)
+    // 阴影也要变换
+    this.ground.updatePosition(cameraTargetPosition)
+  }
+
   checkBottleHit() {
     if (this.bottle.obj.position.y <= blockConf.height / 2 && this.bottle.status === 'jump' && this.bottle.flyingTime > 0.3) {
       this.checkingHit = true
@@ -191,6 +229,11 @@ class GamePage {
         this.bottle.obj.position.y = blockConf.height / 2
         this.bottle.obj.position.x = this.bottle.destination[0]
         this.bottle.obj.position.z = this.bottle.destination[1]
+        // 渲染下一个 block
+        if (this.hit === HIT_NEXT_BLOCK_CENTER || this.hit === HIT_NEXT_BLOCK_NORMAL) {
+          // 直接生成 block，并改变相机的位置
+          this.updateNextBlock()
+        }
       } else {
         // game over
         this.removeTouchEvent()
