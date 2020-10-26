@@ -383,6 +383,15 @@ class Bottle {
     })(particle), Math.random() * 500)
 
   }
+
+  reset () {
+    // 状态初始化
+    this.stop()
+    // 位置初始化
+    this.obj.rotation.x = 0
+    this.obj.rotation.z = 0
+    this.obj.position.set(bottleConf.initPosition.x, bottleConf.initPosition.y + 30, bottleConf.initPosition.z)
+  }
 }
 
 export default new Bottle()

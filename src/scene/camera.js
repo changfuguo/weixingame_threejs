@@ -21,6 +21,10 @@ class Camera {
     customAnimation.to(0.5, this.target, { x: newTargetPosition.x, y: newTargetPosition.y, z: newTargetPosition.z })
   }
 
+  reset () {
+    this.instance.position.set(-10, 10, 10)
+    this.target = new THREE.Vector3(0, 0, 0)
+  }
 }
 
 export default new Camera()

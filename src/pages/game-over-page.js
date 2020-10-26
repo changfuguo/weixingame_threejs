@@ -9,13 +9,12 @@ class GameOverPage {
   }
 
   initGameoverCanvas(options) {
-    const openDataContext = wx.getOpenDataContext()
     const aspect = window.innerHeight / window.innerWidth
     this.region = [
       (window.innerWidth - 200) / 2,
       (window.innerWidth - 200) / 2 + 200,
-      (window.innerHeight - 100) / 2 + 230,
-      (window.innerHeight - 100) / 2 + 308
+      (window.innerHeight - 100) / 2,
+      (window.innerHeight - 100) / 2 + 100
     ]
     this.camera = options.camera
     this.canvas = document.createElement('canvas')
@@ -49,10 +48,29 @@ class GameOverPage {
 
   show() {
     this.obj.visible = true
+    this.bindTouchEvent()
   }
 
   hide() {
     this.obj.visible = false
+    this.removeTouchEvent()
+  }
+
+  onTouchEnd = (e) => {
+    const pageX = e.changedTouches[0].pageX
+    const pageY = e.changedTouches[0].pageY
+    // 判断是否点击 gameover 范围之内
+    if (pageX > this.region[0] && pageX < this.region[1] && pageY > this.region[2] && pageY < this.region[3]) {
+      this.callbacks.gameRestart()
+    }
+  }
+
+  bindTouchEvent () {
+    canvas.addEventListener('touchend', this.onTouchEnd)
+  }
+
+  removeTouchEvent () {
+    canvas.removeEventListener('touchend', this.onTouchEnd)
   }
 }
 

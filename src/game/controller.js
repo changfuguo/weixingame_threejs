@@ -13,7 +13,7 @@ class GameController {
           this.gameView.showGameOverPage()
           break
         case 'game':
-          this.showGamePage()
+          this.gameView.showGamePage()
           break
         default:
       }
@@ -26,8 +26,10 @@ class GameController {
         this.gameModel.setStage('game-over')
       }
     }
-    const gameOverPageCallbacks = () => {
-      this.gameModel.setStage('game')
+    const gameOverPageCallbacks = {
+      gameRestart: () => {
+        this.gameModel.setStage('game')
+      }
     }
     // 传入回调函数-在 game page 中调用
     this.gameView.initGamePage(gamePageCallbacks)

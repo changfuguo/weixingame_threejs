@@ -238,6 +238,7 @@ class GamePage {
         // game over
         this.removeTouchEvent()
         this.callbacks.showGameOverPage()
+        this.checkingHit = false
       }
     }
   }
@@ -251,15 +252,41 @@ class GamePage {
     this.score = 0
   }
   show() {
-    this.mesh.visible = true
+    this.visible = true
   }
 
   hide() {
-    this.mesh.visible = false
+    this.visible = false
   }
 
   restart() {
-    console.log('game page restart')
+    // 场景中元素的删除
+    this.deleteObjectsFromScene()
+    // 清空状态
+    this.scene.reset()
+    this.bottle.reset()
+    this.ground.reset()
+    this.addInitBlock()
+    this.addGround()
+    this.addBottle()
+    this.bindTouchEvent()
+  }
+
+  deleteObjectsFromScene() {
+    // 返回第一个被找到的对象
+    let obj = this.scene.instance.getObjectByName('block')
+    while(obj) {
+      this.scene.instance.remove(obj)
+      if (obj.geometry) {
+        obj.geometry.dispose()
+      }
+      if (obj.meterial) {
+        obj.meterial.dispose()
+      }
+      obj = this.scene.instance.getObjectByName('block')
+    }
+    this.scene.instance.remove(this.bottle.obj)
+    this.scene.instance.remove(this.ground.instance)
   }
 }
 

@@ -7,6 +7,11 @@ class Scene {
     this.instance = null
   }
 
+  reset() {
+    this.camera.reset()
+    this.light.reset()
+  }
+
   init() {
     this.instance = new THREE.Scene()
     const renderer = this.renderer = new THREE.WebGLRenderer({
