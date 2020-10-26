@@ -12,7 +12,7 @@ class GameView {
   }
 
   showGameOverPage() {
-    this.gamePage.hide()
+    // this.gamePage.hide()
     this.gameOverPage.show()
   }
 
@@ -23,7 +23,7 @@ class GameView {
   initGameOverPage(callbacks) {
     this.gameOverPage = new GameOverPage(callbacks)
     this.gameOverPage.init({
-      scene: this.gamePage.scene
+      camera: this.gamePage.scene.camera.instance
     })
   }
 
