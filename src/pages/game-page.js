@@ -6,7 +6,7 @@ import bottle from '../objects/bottle'
 import blockConf from '../../confs/block-conf'
 import gameConf from '../../confs/game-conf'
 import bottleConf from '../../confs/bottle-conf'
-// import { stopAllAnimation } from '../../libs/animation'
+import { stopAllAnimation } from '../../libs/animation'
 import utils from '../utils/index'
 import ScoreText from '../view3d/score-text'
 import audioManager from '../modules/audio-manager'
@@ -269,8 +269,40 @@ class GamePage {
         }
       } else {
         // game over
+        this.combo = 0
         this.removeTouchEvent()
-        this.callbacks.showGameOverPage()
+        // 结束动画
+        if (this.hit === GAME_OVER_NEXT_BLOCK_BACK || this.hit === GAME_OVER_CURRENT_BLOCK_BACK) {
+          // 1. 停止所有的动画
+          stopAllAnimation()
+          // 2. 停止 bottle 的位置更新
+          this.bottle.stop()
+          // 3. 执行 bottle 的掉落动画
+          // 向前倾倒动画
+          this.bottle.forerake()
+          audioManager.fall_from_block.play()
+          this.bottle.obj.position.y = blockConf.height / 2
+          // 展示 gameover 页面
+          setTimeout (() => {
+            this.uploadScore()
+            this.callbacks.showGameOverPage()
+          }, 2000)
+        } else if (this.hit === GAME_OVER_NEXT_BLOCK_FRONT) {
+          // 1. 停止所有的动画
+          stopAllAnimation()
+          this.bottle.stop()
+          this.bottle.hypsokinesis()
+          audioManager.fall_from_block.play()
+          this.bottle.obj.position.y = blockConf.height / 2
+          // 展示 gameover 页面
+          setTimeout (() => {
+            this.uploadScore()
+            this.callbacks.showGameOverPage()
+          }, 2000)
+        } else {
+          audioManager.fall.play()
+          this.callbacks.showGameOverPage()
+        }
         this.checkingHit = false
       }
     }

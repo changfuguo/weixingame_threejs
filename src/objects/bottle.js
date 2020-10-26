@@ -3,10 +3,11 @@ import bottleConf from '../../confs/bottle-conf'
 import blockConf from '../../confs/block-conf'
 import gameConf from '../../confs/game-conf'
 import ScoreText from '../view3d/score-text'
+import audioManager from '../modules/audio-manager'
 
 class Bottle {
   constructor() {
-    this.direction = 0
+    this.direction = 1
     // 跳跃的轴
     this.axis = null
     // 物体的状态
@@ -217,6 +218,7 @@ class Bottle {
   }
 
   showup() {
+    audioManager.init.play()
     customAnimation.to(0.6, this.obj.position, {
       x: bottleConf.initPosition.x,
       y: bottleConf.initPosition.y + blockConf.height / 2,
@@ -392,6 +394,57 @@ class Bottle {
     this.obj.rotation.z = 0
     this.obj.position.set(bottleConf.initPosition.x, bottleConf.initPosition.y + 30, bottleConf.initPosition.z)
   }
+
+  forerake() {
+    this.status = 'forerake'
+    // 旋转动画
+    setTimeout(() => {
+      if (this.direction === 0) {
+        // 绕 z 轴旋转
+        customAnimation.to(1, this.obj.rotation, {
+          z: -Math.PI / 2
+        })
+      } else {
+        // 绕 x 轴旋转
+        customAnimation.to(1, this.obj.rotation, {
+          x: -Math.PI / 2
+        })
+      }
+      // 位置下移
+      setTimeout ( () => {
+        customAnimation.to(0.4, this.obj.position, {
+          y: -blockConf.height / 2 + 1.2
+        })
+      }, 350)
+    }, 200)
+  }
+
+  hypsokinesis() {
+    this.status = 'hypsokinesis'
+    setTimeout(() => {
+      if (this.direction == 0) {
+        customAnimation.to(0.8, this.obj.rotation, {
+          z: Math.PI / 2
+        })
+      } else {
+        customAnimation.to(0.8, this.obj.rotation, {
+          x: Math.PI / 2
+        })
+      }
+      setTimeout ( () => {
+        customAnimation.to(0.4, this.obj.position, {
+          y: -blockConf.height / 2 + 1.2
+        })
+        customAnimation.to(0.2, this.head.position, {
+          x: 1.125
+        })
+        customAnimation.to(0.2, this.head.position, {
+          x: 0
+        }, 'Linear', 0.2)
+      }, 350)
+    }, 200)
+  }
+
 }
 
 export default new Bottle()

@@ -105,6 +105,7 @@ const selfAnimationId = ++animationId
    step()
  }
 
+ // 大于 stoppedAnimationId 的所有动画才会执行
  const stopAllAnimation = exports.stopAllAnimation = function stopAllAnimation () {
    stoppedAnimationId = animationId
  }
