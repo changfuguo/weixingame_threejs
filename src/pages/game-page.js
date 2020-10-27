@@ -123,7 +123,7 @@ class GamePage {
 
   updateScore (score) {
     this.scoreText.updateScore(score)
-    this.scene.updateScore(this.scoreText.instance)
+    // this.scene.updateScore(this.scoreText.instance)
   }
 
   addInitBlock() {
@@ -244,6 +244,7 @@ class GamePage {
     this.ground.updatePosition(cameraTargetPosition)
   }
 
+  // 检测是否发生碰撞
   checkBottleHit() {
     if (this.bottle.obj.position.y <= blockConf.height / 2 && this.bottle.status === 'jump' && this.bottle.flyingTime > 0.3) {
       this.checkingHit = true
@@ -259,10 +260,13 @@ class GamePage {
             this.combo ++
             audioManager[`combo${(this.combo <= 8) ? this.combo : '8'}`].play()
             this.score +=2 * this.combo
+            // bottle 上面的分数显示
+            this.bottle.showAddScore(2 * this.combo)
             this.updateScore(this.score)
           } else if (this.hit === HIT_NEXT_BLOCK_NORMAL) {
             this.combo = 0
             audioManager.success.play()
+            this.bottle.showAddScore(1)
             this.updateScore(++this.score)
           }
           // 直接生成 block，并改变相机的位置

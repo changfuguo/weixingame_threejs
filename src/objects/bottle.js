@@ -124,25 +124,31 @@ class Bottle {
       this.particles.push(particle)
       this.obj.add(particle)
     }
+    // 跳跃显示分数实例
     this.scoreText = new ScoreText()
     this.scoreText.init({
       fillStyle: 0x252525
     })
     this.scoreText.instance.visible = false
+    // 物体的局部旋转，以弧度来表示。
     this.scoreText.instance.rotation.y = -Math.PI / 4
     this.scoreText.instance.scale.set(0.5, 0.5, 0.5)
     this.obj.add(this.scoreText.instance)
   }
-  showAddScore (score) {
+
+  showAddScore(score) {
+    // 分数动画-向上且透明度逐渐减小
     const value = '+' + score
     this.scoreText.updateScore(value)
     this.scoreText.instance.visible = true
     this.scoreText.instance.position.y = 3
     this.scoreText.instance.material.opacity = 1
 
+    // 位置向上移动
     customAnimation.to(0.7, this.scoreText.instance.position, {
       y: blockConf.height + 6
     })
+    // 改变透明度
     TweenAnimation(this.scoreText.instance.material.opacity, 0, 0.7, 'Linear', (value, complete) => {
       this.scoreText.instance.material.opacity = value
       if (complete) {
@@ -150,6 +156,7 @@ class Bottle {
       }
     })
   }
+
   loadTexture() {
     // 小游戏加载资源是以 /game 开头，后面跟上资源的地址
     const specularTexture = this.loader.load('/game/res/images/head.png')

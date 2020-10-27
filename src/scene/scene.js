@@ -60,13 +60,13 @@ class Scene {
     scoreInstance.position.y = 40
   }
 
-  updateScore(scoreInstance) {
-    this.camera.instance.remove(this.scoreInstance)
-    this.currentStore = scoreInstance
-    this.camera.instance.add(scoreInstance)
-    scoreInstance.position.x = -20
-    scoreInstance.position.y = 40
-  }
+  // updateScore(scoreInstance) {
+  //   this.camera.instance.remove(this.scoreInstance)
+  //   this.currentStore = scoreInstance
+  //   this.camera.instance.add(scoreInstance)
+  //   scoreInstance.position.x = -20
+  //   scoreInstance.position.y = 40
+  // }
 }
 
 export default new Scene()

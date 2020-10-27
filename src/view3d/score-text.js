@@ -19,6 +19,7 @@ export default class ScoreText {
 
   updateScore (score) {
     const scoreStr = score.toString()
+    // 可以直接修改 geometry
     this.instance.geometry = new THREE.TextGeometry(scoreStr, {'font': font, 'size': 6.0, 'height': 0.1})
   }
 }
