@@ -127,8 +127,8 @@ class GamePage {
   }
 
   addInitBlock() {
-    const cuboidBlock = this.currentBlock = new Cuboid(-15, 0, 0)
-    const cylinderBlock = this.nextBlock = new Cylinder(23, 0, 0)
+    const cuboidBlock = this.currentBlock = new Cuboid(-15, 0, 0, 'color')
+    const cylinderBlock = this.nextBlock = new Cylinder(23, 0, 0, 'color')
     this.targetPosition = {
       x: 23,
       y: 0,
@@ -152,13 +152,13 @@ class GamePage {
 
   getHitStatus(bottle, currentBlock, nextBlock, initY) {
     // 竖直上抛运动飞行时间
-    let flyingTime = parseFloat(bottle.velocity.vy) / parseFloat(gameConf.gravity) * 2.0
+    let flyingTime = parseFloat(bottle.velocity.vy) / parseFloat(gameConf.gravity ) * 2.0
     initY = initY || bottle.obj.position.y.toFixed(2)
     const time = +((bottle.velocity.vy - Math.sqrt(Math.pow(bottle.velocity.vy, 2) - 2 * initY * gameConf.gravity)) / gameConf.gravity).toFixed(2)
     flyingTime -= time
     flyingTime = +flyingTime.toFixed(2)
     const destination = []
-    const bottlePosition = new THREE.Vector2(bottle.obj.position.x, bottle.obj.position.y)
+    const bottlePosition = new THREE.Vector2(bottle.obj.position.x, bottle.obj.position.z)
     // 水平方向上跳跃的距离，根据跳转的方向计算
     const translate = new THREE.Vector2(this.axis.x, this.axis.z).setLength(bottle.velocity.vx * flyingTime)
     // bottle 下一次跳跃的位置
@@ -227,9 +227,10 @@ class GamePage {
     }
     this.setDirection(direction)
     if (type === 'cuboid') {
-      this.nextBlock = new Cuboid(targetPosition.x, targetPosition.y, targetPosition.z, width)
+      const cuboidSeed = Math.floor(Math.random() * 2)
+      this.nextBlock = new Cuboid(targetPosition.x, targetPosition.y, targetPosition.z, cuboidSeed ? 'well' : 'color', width)
     } else {
-      this.nextBlock = new Cylinder(targetPosition.x, targetPosition.y, targetPosition.z, width)
+      this.nextBlock = new Cylinder(targetPosition.x, targetPosition.y, targetPosition.z, 'color', width)
     }
     this.scene.instance.add(this.nextBlock.instance)
     // 修改相机的位置
@@ -300,8 +301,15 @@ class GamePage {
             this.callbacks.showGameOverPage()
           }, 2000)
         } else {
+          stopAllAnimation()
+          this.bottle.stop()
+          this.bottle.straight()
           audioManager.fall.play()
-          this.callbacks.showGameOverPage()
+          this.bottle.obj.position.y = blockConf.height / 2
+          setTimeout (() => {
+            this.uploadScore()
+            this.callbacks.showGameOverPage()
+          }, 2000)
         }
         this.checkingHit = false
       }
