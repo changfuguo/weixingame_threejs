@@ -9,6 +9,7 @@ import bottleConf from '../../confs/bottle-conf'
 import { stopAllAnimation } from '../../libs/animation'
 import utils from '../utils/index'
 import ScoreText from '../view3d/score-text'
+import tailSystem from '../objects/tail'
 import audioManager from '../modules/audio-manager'
 
 const HIT_NEXT_BLOCK_CENTER = 1
@@ -26,15 +27,19 @@ class GamePage {
     this.checkingHit = false
     this.score = 0
     this.combo = 0
+    this.now = Date.now()
+    this.lastFrameTime = Date.now()
   }
   init() {
     this.scene = scene
     this.ground = ground
     this.bottle = bottle
+    this.tailSystem = tailSystem
     this.scoreText = new ScoreText()
     this.scene.init()
     this.ground.init()
     this.bottle.init()
+    this.tailSystem.init(this.scene.instance, this.bottle)
     this.addInitBlock()
     // 初始计分器
     this.scoreText.init({
@@ -103,6 +108,8 @@ class GamePage {
   }
 
   render() {
+    this.now = Date.now()
+    const tickTime = this.now - this.lastFrameTime
     if (this.currentBlock) {
       this.currentBlock.update()
     }
@@ -114,6 +121,11 @@ class GamePage {
     if (this.checkingHit) {
       this.checkBottleHit()
     }
+    if (this.tailSystem) {
+      // 传入上一帧与这一帧的时间间隔
+      this.tailSystem.update(tickTime)
+    }
+    this.lastFrameTime = Date.now()
     requestAnimationFrame(this.render.bind(this))
   }
 
