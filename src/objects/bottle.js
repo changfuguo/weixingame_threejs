@@ -96,12 +96,16 @@ class Bottle {
     this.bottle.position.x = 0
     this.obj.add(this.bottle)
 
+    // 粒子数组
     this.particles = []
 
+    // 定义两种粒子纹理
     const whiteParticleMaterial = new THREE.MeshBasicMaterial({map: this.loader.load('/game/res/images/white.png'), alphaTest: 0.5})
     const greenParticleMaterial = new THREE.MeshBasicMaterial({map: this.loader.load('/game/res/images/green.png'), alphaTest: 0.5})
+    // 一个平面
     const particleGeometry = new THREE.PlaneGeometry(2, 2);
 
+    // 创建 15 个白色粒子
     for (let i = 0; i < 15; i++) {
       const particle = new THREE.Mesh(particleGeometry, whiteParticleMaterial)
       particle.rotation.x = -Math.PI / 4
@@ -111,6 +115,7 @@ class Bottle {
       this.obj.add(particle)
     }
 
+    // 创建 5 个绿色粒子
     for (let i = 0; i < 5; i++) {
       const particle = new THREE.Mesh(particleGeometry, greenParticleMaterial)
       particle.rotation.x = -Math.PI / 4
@@ -228,6 +233,7 @@ class Bottle {
 
   shrink() {
     this.status = 'shrink'
+    // 执行粒子聚集动画
     this.gatherParticles()
   }
 
@@ -241,6 +247,7 @@ class Bottle {
     this.status = 'jump'
     this.translateH = 0
     this.translateY = 0
+    // 跳跃时，初始化粒子状态
     this.resetParticles()
   }
 
@@ -283,7 +290,8 @@ class Bottle {
     })
   }
 
-  resetParticles () {
+  // 初始化粒子状态
+  resetParticles() {
     if (this.gatherTimer) {
       clearTimeout(this.gatherTimer)
     }
@@ -295,7 +303,8 @@ class Bottle {
     }
   }
 
-  scatterParticles () {
+  // 碰撞检测完成，进行粒子散开动画
+  scatterParticles() {
     for (let i = 0; i < 10; i++) {
       this.particles[i].scattering = true
       this.particles[i].gathering = false
@@ -303,11 +312,15 @@ class Bottle {
     }
   }
 
-  _scatterParticle (particle) {
+  // 粒子散开动画
+  _scatterParticle(particle) {
+    // 散开范围
     const minDistance = bottleConf.bodyWidth / 2
     const maxDistance = 2
+    // 生成粒子位置
     const x = (minDistance + Math.random() * (maxDistance - minDistance)) * (1 - 2 * Math.random())
     const z = (minDistance + Math.random() * (maxDistance - minDistance)) * (1 - 2 * Math.random())
+    // 物体的局部缩放
     particle.scale.set(1, 1, 1)
     particle.visible = false
     particle.position.x = x
@@ -333,16 +346,22 @@ class Bottle {
           particle.visible = false
         })
       }
-
     })(particle), Math.random() * 500)
   }
+
+  // 粒子聚集动画
   gatherParticles () {
+    // 取 5 个绿色，5 个白色粒子
     for (let i = 10; i < 20; i++) {
+      // 聚集
       this.particles[i].gathering = true
+      // 散开
       this.particles[i].scattering = false
+      // 循环例子
       this._gatherParticle(this.particles[i])
     }
     this.gatherTimer = setTimeout(() => {
+      // 一直加载白色粒子-一直按压就是白色粒子
       for (let i = 0; i < 10; i++) {
         this.particles[i].gathering = true
         this.particles[i].scattering = false
@@ -350,17 +369,22 @@ class Bottle {
       }
     }, 500 + 1000 * Math.random())
   }
+
+  // 粒子聚集动画
   _gatherParticle (particle) {
+    // 粒子出现的距离
     const minDistance = 1
     const maxDistance = 8
     particle.scale.set(1, 1, 1)
     particle.visible = false
+    // 生成位置信息
     const x = Math.random() > 0.5 ? 1 : -1
     const z = Math.random() > 0.5 ? 1 : -1
     particle.position.x = (minDistance + (maxDistance - minDistance) * Math.random()) * x
     particle.position.y = minDistance + (maxDistance - minDistance) * Math.random()
     particle.position.z = (minDistance + (maxDistance - minDistance) * Math.random()) * z
 
+    // 闭包-保存 particle 变量
     setTimeout(((particle) => {
       return () => {
         if (!particle.gathering) return
@@ -381,9 +405,7 @@ class Bottle {
           }
         })
       }
-
     })(particle), Math.random() * 500)
-
   }
 
   reset () {

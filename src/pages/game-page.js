@@ -313,6 +313,8 @@ class GamePage {
         }
         this.checkingHit = false
       }
+      // 开启粒子散开动画
+      this.bottle.scatterParticles()
     }
   }
 
