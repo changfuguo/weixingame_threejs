@@ -48,7 +48,8 @@ class GamePage {
     this.addGround()
     this.addBottle()
     this.addScore()
-    this.bindTouchEvent()
+    // 启动页面不能开启跳一跳功能
+    // this.bindTouchEvent()
     this.render()
   }
   

@@ -31,8 +31,15 @@ class GameController {
         this.gameModel.setStage('game')
       }
     }
+
+    const startPageCallbacks = {
+      gameRestart: () => {
+        this.gameModel.setStage('game')
+      }
+    }
     // 传入回调函数-在 game page 中调用
     this.gameView.initGamePage(gamePageCallbacks)
+    this.gameView.initStartPage(startPageCallbacks)
     this.gameView.initGameOverPage(gameOverPageCallbacks)
   }
 }
