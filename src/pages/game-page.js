@@ -31,6 +31,7 @@ class GamePage {
     this.lastFrameTime = Date.now()
   }
   init() {
+    this.initRankListCanvas()
     this.scene = scene
     this.ground = ground
     this.bottle = bottle
@@ -336,6 +337,7 @@ class GamePage {
   }
 
   uploadScore () {
+    // 通过 postMessage 将分数传到开放数据域中
     const openDataContext = wx.getOpenDataContext()
     openDataContext.postMessage({
       type: 'updateMaxScore',
@@ -343,6 +345,17 @@ class GamePage {
     })
     this.score = 0
   }
+
+  initRankListCanvas () {
+    const openDataContext = wx.getOpenDataContext()
+    openDataContext.postMessage({
+      type: 'initCanvas',
+      width: window.innerWidth,
+      height: window.innerHeight
+    })
+    this.score = 0
+  }
+
   show() {
     this.visible = true
   }
